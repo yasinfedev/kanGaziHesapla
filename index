@@ -1,0 +1,436 @@
+<!doctype html>
+
+<html>
+  <head>
+    <link rel="stylesheet" href="lib/style.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <title>Kan Gazı Hesaplama Motoru v1.0</title>
+  </head>
+
+  <body>
+    
+    <div class="jumbotron text-center bg-primary" style="color:white; font-weight: bold; font-size:24px;">Konya ŞH Acil Tıp Kan Gazı Hesaplama Aracı</div>
+    <div class="container">
+      <div class="">
+         <div class="card">
+          <div class="card-header bg-warning">Değerleri Giriniz</div>
+          <div class="card-body">
+
+            <div class="alert alert-danger" role="alert">
+  <b>UYARI 1:</b> Lütfen pH, PaO<sub>2</sub>, PaCO<sub>2</sub> ve HCO<sub>3</sub> değerlerini ondalık olarak girerken arada <b>virgül değil nokta</b> kullanınız. <br><b>UYARI 2:</b> Nümerik dışı değerlerde (harf gibi) hesaplama aracı çalışmayacaktır.
+</div>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="hastaYasi_">Hasta yaşı</span>
+  </div>
+  <input type="text" id="hastaYasi" class="form-control" placeholder="Hasta yaşını giriniz." aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+
+
+            <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="hastaPh_">pH</span>
+  </div>
+  <input type="text" id="hastaPh" class="form-control" placeholder="pH'ı giriniz." aria-label="Username" aria-describedby="basic-addon1">
+</div>
+             <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">PaO<sub>2</sub></span>
+                </div>
+                <input type="text" id="pao2Degeri" class="form-control" aria-label="Amount (to the nearest dollar)"  placeholder="PaO2 değerini giriniz.">
+                <div class="input-group-append">
+                  <span class="input-group-text">mmHg</span>
+             </div>
+             </div>
+
+             <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">PaCO<sub>2</sub></span>
+                </div>
+                <input type="text" id="paco2Degeri" class="form-control" aria-label="Amount (to the nearest dollar)"  placeholder="PaCO2 değerini giriniz.">
+                <div class="input-group-append">
+                  <span class="input-group-text">mmHg</span>
+             </div>
+             </div>
+
+             <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">HCO<sub>3</sub></span>
+                </div>
+                <input type="text" id="hco3Degeri" class="form-control" aria-label="Amount (to the nearest dollar)"  placeholder="HCO3 değerini giriniz.">
+                <div class="input-group-append">
+                  <span class="input-group-text">mmHg</span>
+             </div>
+             </div>
+
+            
+
+             <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Na<sup>+</sup></span>
+                </div>
+                <input type="text" id="naDegeri" class="form-control" aria-label="Amount (to the nearest dollar)"  placeholder="Sodyum değerini giriniz.">
+                <div class="input-group-append">
+                  <span class="input-group-text">mEq/L</span>
+             </div>
+             </div>
+
+             <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Cl<sup>-</sup></span>
+                </div>
+                <input type="text" id="clDegeri" class="form-control" aria-label="Amount (to the nearest dollar)"  placeholder="Klor değerini giriniz.">
+                <div class="input-group-append">
+                  <span class="input-group-text">mEq/L</span>
+             </div>
+             </div>
+             
+             <button type="button" class="btn btn-primary btn-lg btn-block" onclick="aaHesap(); aaYasaGore(); phYorumu(); kuralIkiYorumu(); kuralUcYorumu1(); beklenenPaco2(); beklenenHco3(); agHesapla();">HESAPLA</button>
+
+</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header bg-warning">Tutarlılık Kontrolü</div>
+          <div class="card-body">
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1"">Tutarlılık yorumu:</span>
+  </div>
+  <input type="text"
+  id="tutarlilikYorumu" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1" readonly>
+</div>
+
+
+          </div>
+        </div>
+         <div class="card">
+          <div class="card-header bg-warning">Arterio-alveoler Gradient Hesabı</div>
+          <div class="card-body">
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="hesaplananAa_">Hesaplanan Aa Gradient</span>
+  </div>
+  <input type="text" id="hesaplananAa" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="yasaGoreAa_">Yaşa göre Aa Gradient</span>
+  </div>
+  <input type="text" id="yasaGoreAa" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+ </div>
+        <div class="card">
+          <div class="card-header bg-warning">Basamaklı Kan Gazı Yorumu</div>
+          <div class="card-body">
+
+           
+
+ <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="phYorumu_">pH yorumu:</span>
+  </div>
+  <input type="text" id="phYorumu" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+ 
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Primer olay yorumu:</span>
+  </div>
+  <input type="text" 
+  id="kuralIkiYorumu" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+
+
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Mikst bozukluk yorumu:</span>
+  </div>
+  <input type="text"
+  id="kuralUcYorumu" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+
+
+<div class="alert alert-danger" role="alert">
+  Metabolik asidoz'da beklenen kompansasyon - beklenen PCO2 değeri
+</div>
+
+<div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Beklenen PaCO<sub>2</sub>:</span>
+                </div>
+                <input type="text"
+                id="beklenenPaco2_1" class="form-control" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                  <span class="input-group-text">±2 mmHg</span>
+             </div>
+             </div>
+
+<div class="alert alert-danger" role="alert">
+  Metabolik alkaloz'da beklenen kompansasyon - beklenen PCO2 değeri
+</div>
+
+<div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Beklenen PaCO<sub>2</sub>:</span>
+                </div>
+                <input type="text"
+                id="beklenenPaco2_2" class="form-control" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                  <span class="input-group-text">±2 mmHg</span>
+             </div>
+             </div>
+
+
+
+<div class="alert alert-danger" role="alert">
+  Respiratuvar asidoz'da beklenen kompansasyon - beklenen HCO3 değeri
+</div>
+
+<div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Beklenen Delta HCO<sub>3</sub>:</span>
+                </div>
+                <input type="text"
+                id="beklenenHco3_1" class="form-control" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                  <span class="input-group-text">mmHg</span>
+             </div>
+             </div>
+
+<div class="alert alert-danger" role="alert">
+  Respiratuvar alkaloz'da beklenen kompansasyon - beklenen HCO3 değeri
+</div>
+
+<div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Beklenen Delta HCO<sub>3</sub>:</span>
+                </div>
+                <input type="text" 
+                id="beklenenHco3_2"
+                class="form-control" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                  <span class="input-group-text">mmHg</span>
+             </div>
+             </div>
+
+
+
+
+<div class="alert alert-primary" role="alert">
+  
+  Anyon gap (anyon açığı) hesabı<br>
+  * AG artmış ise Delta-Delta Gap" ve "Osmolar Gap" hesaplanır.
+</div>
+
+ <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">AG</span>
+  </div>
+  <input type="text" id="agDegeri" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+ <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">AG yorumu:</span>
+  </div>
+  <input type="text" 
+  id="agYorumu" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+
+ <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Delta-Delta Gap</span>
+  </div>
+  <input type="text" 
+  id="deltaDelta" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Delta-Delta Gap yorumu:</span>
+  </div>
+  <input type="text" 
+  id="deltaDeltaYorumu" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+
+</div>
+
+
+
+          </div>
+
+          <div class="alert alert-success text-center" role="alert">
+  <a href="">Kaynak sunum</a> | Tasarım ve kodlama: Uzm.Dr.Yasin YILDIZ | © 2024 - Konya
+</div>
+
+          
+        </div>
+        
+
+          </div>
+          
+        </div>
+        
+      </div>
+
+      
+    </div>
+
+    <script src="lib/script.js"></script>
+    <script>
+      // Add your code here
+
+var hastaYasi = Number(document.getElementById("hastaYasi").value);
+var hastaPh = Number(document.getElementById("hastaPh").value);
+var pao2Degeri = Number(document.getElementById("pao2Degeri").value);
+var paco2Degeri = Number(document.getElementById("paco2Degeri").value);
+var hco3Degeri = Number(document.getElementById("hco3Degeri").value);
+
+
+
+function aaHesap() {
+  var pao2Degeri = Number(document.getElementById("pao2Degeri").value);
+  var paco2Degeri = Number(document.getElementById("paco2Degeri").value);
+  
+  console.log("pao2Degeri:", pao2Degeri);
+  console.log("paco2Degeri:", paco2Degeri);
+  
+  var hesaplananAa = 150 - (1.25 * paco2Degeri) - pao2Degeri;
+  document.getElementById("hesaplananAa").value = hesaplananAa;
+}
+
+function aaYasaGore() {
+  var hastaYasi = Number(document.getElementById("hastaYasi").value);
+  var yasaGoreAa = ((hastaYasi+10)/4);
+  document.getElementById("yasaGoreAa").value = yasaGoreAa;
+}
+
+function phYorumu() {
+  var hastaPh = Number(document.getElementById("hastaPh").value);
+  if (hastaPh>7.45) {
+    document.getElementById("phYorumu").value = "ALKALOZ";
+  } else if (hastaPh >=7.36 && hastaPh <=7.45) {
+    document.getElementById("phYorumu").value = "NORMAL SINIRLARDA";
+  } else if (hastaPh<7.35) {
+    document.getElementById("phYorumu").value = "ASİDOZ";
+  }
+}
+
+function kuralIkiYorumu() {
+  var hastaPh = Number(document.getElementById("hastaPh").value);
+  var paco2Degeri = Number(document.getElementById("paco2Degeri").value);
+  if (hastaPh<=7.40 && paco2Degeri<40.0) {
+    document.getElementById("kuralIkiYorumu").value = "Primer olay metabolik"
+  } else if (hastaPh>7.40 && paco2Degeri>40.0) {
+    document.getElementById("kuralIkiYorumu").value = "Primer olay metabolik"
+  } else if (hastaPh<7.40 && paco2Degeri>40.0) {
+    document.getElementById("kuralIkiYorumu").value = "Primer olay respiratuvar"
+  } else if (hastaPh>7.40 && paco2Degeri<40.0) {
+    document.getElementById("kuralIkiYorumu").value = "Primer olay respiratuvar"
+  } else {
+     document.getElementById("kuralIkiYorumu").value = "Primer olay yorumlanamaz"
+  }
+}
+
+function kuralUcYorumu1() {
+  var hastaPh = Number(document.getElementById("hastaPh").value);
+  var paco2Degeri = Number(document.getElementById("paco2Degeri").value);
+  if (hastaPh>7.35 || hastaPh<7.45) {
+    if (paco2Degeri>40.0) {
+      document.getElementById("kuralUcYorumu").value = "R.asidoz - M.alkaloz"
+    } else if (paco2Degeri<40.0) {
+      document.getElementById("kuralUcYorumu").value = "R.alkaloz - M.asidoz"
+    }
+  } else if (paco2Degeri>35.0 || paco2Degeri<45.0) {
+    if (hastaPh>7.40) {
+      document.getElementById("kuralUcYorumu").value = "M.alkoloz - R.asidoz"
+    } else if (hastaPh<7.40) {
+      document.getElementById("kuralUcYorumu").value = "M.asidoz - R.alkaloz"
+    }
+  }
+}
+
+function beklenenPaco2() {
+  var hastaPh = Number(document.getElementById("hastaPh").value);
+  var hco3Degeri = Number(document.getElementById("hco3Degeri").value);
+  if (hastaPh<7.35) {
+    document.getElementById("beklenenPaco2_1").value = (1.5 * hco3Degeri) + 8
+  } else if (hastaPh>7.35) {
+    document.getElementById("beklenenPaco2_2").value = (0.9 * hco3Degeri) + 15
+  }
+}
+
+function beklenenHco3() {
+  var hastaPh = Number(document.getElementById("hastaPh").value);
+  var paco2Degeri = Number(document.getElementById("paco2Degeri").value);
+  if (hastaPh<7.35 && paco2Degeri>40) {
+    document.getElementById("beklenenHco3_1").value = (paco2Degeri - 40)/10
+  } else if (hastaPh>7.45 && paco2Degeri<40) {
+    document.getElementById("beklenenHco3_2").value = (40 - paco2Degeri)/5
+  }
+}
+
+function agHesapla() {
+  var naDegeri = Number(document.getElementById("naDegeri").value);
+  var clDegeri = Number(document.getElementById("clDegeri").value);
+  var hco3Degeri = Number(document.getElementById("hco3Degeri").value);
+  var agDegeri = naDegeri - (hco3Degeri +clDegeri );
+  document.getElementById("agDegeri").value = agDegeri;
+  if (agDegeri<8.0) {
+    document.getElementById("agYorumu").value = "Azalmış"
+  } else if (agDegeri>16.0) {
+    document.getElementById("agYorumu").value = "Artmış"
+  } else {
+    document.getElementById("agYorumu").value = "Normal aralıkta"
+  }
+
+  if (agDegeri>16.0) {
+    var deltaDelta = (agDegeri-12)/(24-hco3Degeri)
+    document.getElementById("deltaDelta").value = deltaDelta;
+
+    if (deltaDelta<1.0) {
+      document.getElementById("deltaDeltaYorumu").value = "+ hiperkloremik met.asidoz"
+    } else if (deltaDelta>1.0) {
+      document.getElementById("deltaDeltaYorumu").value = "+ met.alkaloz"
+    }
+  }
+
+
+}
+
+/*function tutarlilikKontrolu() {
+  var hastaPhString = document.getElementById("hastaPh").value;
+  var paco2Degeri = Number(document.getElementById("paco2Degeri").value);
+  var hco3Degeri = Number(document.getElementById("hco3Degeri").value);
+  var phParts = hastaPhString.split(".");
+  var ondalikKisim =  phParts[1];
+  var yeniDegisken = parseInt(ondalikKisim);
+  var ilkDenklem = 24 * (paco2Degeri/hco3Degeri);
+  var ikinciDenklem = 80 - yeniDegisken;
+  if (ikinciDenklem == ilkDenklem ) {
+    document.getElementById("tutarlilikYorumu").value = "TUTARLI"
+  } else {
+    document.getElementById("tutarlilikYorumu").value = "TUTARLI DEĞİL
+  }
+}*/
+
+
+    </script>
+    
+  </body>
+</html>
